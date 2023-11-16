@@ -31,6 +31,17 @@ in
             hash = "sha256-Z1rL9WvEZHr5M03s9KCJ6O6rNuaK7PpwUDaatYuCocI=";
             fetchSubmodules = true;
           };
+        });   
+
+        hyprland = (super.hyprland.override (prev: rec{
+    		  
+        })).overrideAttrs (oldAttrs: rec{
+          mesonFlags = builtins.concatLists [
+            ["-Dauto_features=disabled"]
+            ["-Dxwayland=enabled"]
+            ["-Dlegacy_renderer=enabled"]
+            ["-Dsystemd=enabled"]
+          ];
         });    		
       }
     ) 
@@ -186,8 +197,8 @@ in
   services.xserver.windowManager.hypr.enable = true;
 
   # hyprland
-    #programs.hyprland.enable = true;
-    #programs.hyprland.enableNvidiaPatches = true;
+  #programs.hyprland.enable = true;
+  #programs.hyprland.enableNvidiaPatches = true;
 
   # openbox
   #services.xserver.windowManager.openbox.enable = true;
@@ -389,7 +400,7 @@ in
     # hypr.conf
     home.file.".config/hypr/hypr.conf".text = ''
 gaps_in=3
-border_size=0
+border_size=3
 gaps_out=3
 rounding=7
 max_fps=60 # max fps for updates of config & animations
@@ -433,9 +444,9 @@ Animations {
     enabled=1
     speed=3 # for workspaces
     window_resize_speed=3 # for windows
-    cheap=0 # highly recommended
+    cheap=1 # highly recommended
     borders=0
-    workspaces=0 # not really recommended
+    workspaces=1 # not really recommended
 }
 
 # keybinds
@@ -490,9 +501,11 @@ exec-once=dunst
 exec-once=lxqt-policykit-agent 
 exec-once=udiskie -tnf pcmanfm-qt
 exec-once=nm-applet
-exec-once=volumeicon
+exec=pcmanfm-qt --desktop -d
 exec-once=clipit
-
+exec=pactl unload-module module-echo-cancel
+exec=pactl load-module module-echo-cancel
+exec=volumeicon
     '';
 
     # polybar conf
